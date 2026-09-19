@@ -12,7 +12,7 @@ def person_exists(state, side):
         return state[0] > 0 or state[1] > 0
 
 def all_possible_options(state, side):
-    save_state = state.copy()
+    save_state = list(state)
     one = 0 
     two = 0 
     three = 0
@@ -89,24 +89,46 @@ def valid_states(state):
     possible_states = set()
     
     if state[0] == 0 and state[1] == 0:
-        return {}
+        return set()
         
     # All possible states moving 1 or 2, then prune those breaking the rules
     if(person_exists(state, state[4])):
-        possible_states.update(prune_list(all_possible_options(state, boat)))
+        possible_states.update(prune_list(all_possible_options(state, state[4])))
        
     return possible_states   
      
 
-def dfs(start):
+# Create General Graph Search Alg
+def general_graph_search(start, pop_fn):
     # Create state space graph. What is each action available at each state?
-    cur_state = start
-    
-     
+    fringe = [(start, [start])]
+    closed_set = set()
+    node_expansions = 0
+    while fringe:
+        cur_state, path = pop_fn(fringe)
+        
+        if cur_state[0] == 0 and cur_state[1] == 0 and cur_state[4] == 'R':
+            cost = len(path) - 1
+            return (path, cost, node_expansions)
+        
+        if cur_state in closed_set:
+            continue
+        
+        closed_set.add(cur_state)
+        node_expansions += 1
+        
+        for next_state in valid_states(cur_state):
+            if next_state not in closed_set:
+                fringe.append((next_state, path + [next_state]))
+                
+    return ([], 0, node_expansions)
 
+def dfs(start):
+    return general_graph_search(start, lambda f: f.pop())
+        
 
 def bfs(start):
-    raise NotImplementedError
+    return general_graph_search(start, lambda f: f.pop(0))
 
 
 def report(title, result):
