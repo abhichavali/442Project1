@@ -114,12 +114,12 @@ def transition_cost_b(state1, state2):
         return 2
     elif state1[4] == 'R' and state2[4] == 'L':
         return 1
-    else
+    else:
         return 0
 
 
 # Create General Graph Search Alg for A* and UCS
-def general_graph_search(start, cost, heuristic = lambda s: 0):
+def general_graph_search(start, cost_fn, heuristic_fn = lambda s: 0):
     # Create state space graph. What is each action available at each state?
     fringe = []
     closed_set = set()
@@ -172,5 +172,5 @@ def report(title, result):
 
 if __name__ == "__main__":
     start = read_state()
-    report("Q2.1 (cost model A)", ucs(start, cost_model_a))
-    report("Q2.1 (cost model B)", ucs(start, cost_model_b))
+    report("Q2.1 (cost model A)", ucs(start, transition_cost_a))
+    report("Q2.1 (cost model B)", ucs(start, transition_cost_b))
