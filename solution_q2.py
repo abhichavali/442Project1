@@ -5,7 +5,7 @@ def read_state(filename="input.txt"):
         ml, cl, mr, cr, boat = [x.strip() for x in f.readline().split(",")]
     return (int(ml), int(cl), int(mr), int(cr), boat)
 
-# General shi
+# General 
 def person_exists(state, side):
     if side == "R":
         return state[2] > 0 or state[3] > 0
