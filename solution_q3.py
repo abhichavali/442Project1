@@ -164,7 +164,16 @@ def h2(state):
     return ceil((2 * state[0] + state[1]) / 3)
 
 def h3(state):
-    raise NotImplementedError
+    m_left, c_left, _, _, boat = state
+    people_left = m_left + c_left
+    base_cost = 2 * m_left + c_left
+
+    if boat == "L":
+        min_returns = max(0, people_left - 2)
+    else:
+        min_returns = people_left
+
+    return base_cost + 2 * min_returns
 
 def astar(start, heuristic):
     return general_graph_search(start, transition_cost_a, heuristic_fn = heuristic)
@@ -182,4 +191,4 @@ if __name__ == "__main__":
     start = read_state()
     report("Q3.1 (Heuristic 1)", astar(start, h1))
     report("Q3.1 (Heuristic 2)", astar(start, h2))
-    #report("Q3.1 (Heuristic 3)", astar(start, h3))
+    report("Q3.1 (Heuristic 3)", astar(start, h3))
