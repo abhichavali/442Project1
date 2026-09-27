@@ -86,14 +86,14 @@ def prune_list(states):
     return [s for s in states if is_valid_state(s)]    
         
 def valid_states(state):
-    possible_states = set()
+    possible_states = []
     
     if state[0] == 0 and state[1] == 0:
-        return set()
+        return []
         
     # All possible states moving 1 or 2, then prune those breaking the rules
     if(person_exists(state, state[4])):
-        possible_states.update(prune_list(all_possible_options(state, state[4])))
+        possible_states.extend(prune_list(all_possible_options(state, state[4])))
        
     return possible_states   
      

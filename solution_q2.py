@@ -1,4 +1,5 @@
 import heapq
+import sys
 
 def read_state(filename="input.txt"):
     with open(filename) as f:
@@ -88,20 +89,20 @@ def prune_list(states):
     return [s for s in states if is_valid_state(s)]    
         
 def valid_states(state):
-    possible_states = set()
+    possible_states = []
     
     if state[0] == 0 and state[1] == 0:
-        return set()
+        return []
         
     # All possible states moving 1 or 2, then prune those breaking the rules
     if(person_exists(state, state[4])):
-        possible_states.update(prune_list(all_possible_options(state, state[4])))
+        possible_states.extend(prune_list(all_possible_options(state, state[4])))
        
     return possible_states   
      
 
 def transition_cost_a(state1, state2):
-    # TODO: 2 per missionary + 1 per cannibal
+    # 2 per missionary + 1 per cannibal
     cost = 0
     cost += 2 * abs(state1[0] - state2[0])
     cost += abs(state1[1] - state2[1])
@@ -109,7 +110,7 @@ def transition_cost_a(state1, state2):
 
 
 def transition_cost_b(state1, state2):
-    # TODO: 2 per missionary + 1 per cannibal
+    # Left -> Right costs 2, Right -> Left costs 1
     if state1[4] == 'L' and state2[4] == 'R':
         return 2
     elif state1[4] == 'R' and state2[4] == 'L':
@@ -171,6 +172,8 @@ def report(title, result):
 
 
 if __name__ == "__main__":
+    # Select cost model with: python solution_q2.py A   (or B). No flag runs both.
     start = read_state()
-    report("Q2.1 (UCS, cost model A)", ucs(start, transition_cost_a))
-    report("Q2.1 (UCS, cost model B)", ucs(start, transition_cost_b))
+    cost_models = {"A": transition_cost_a, "B": transition_cost_b}
+    for model in [m.upper() for m in sys.argv[1:]] or ["A", "B"]:
+        report(f"Q2.1 (UCS, cost model {model})", ucs(start, cost_models[model]))
